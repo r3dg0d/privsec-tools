@@ -478,11 +478,11 @@
         "nixpkgs": "nixpkgs_12"
       },
       "locked": {
-        "lastModified": 1790762482,
-        "narHash": "sha256-QQUiuffoDJWRYRkCG5bBJ+2EBgt/WAq2h0Kl6k9Q52I=",
+        "lastModified": 1790763560,
+        "narHash": "sha256-UVkkkCCTc8PD3x65ylKIwlcN2RDcU1IbFdMK/IxbaFs=",
         "owner": "r3dg0d",
         "repo": "opsec-check",
-        "rev": "7417cd80d37d9c8155b3841598980026da094e42",
+        "rev": "782dcfb46fdb079abd929dfb9dbb63cf921ce233",
         "type": "github"
       },
       "original": {
