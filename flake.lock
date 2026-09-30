@@ -26,11 +26,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1790733297,
-        "narHash": "sha256-pPKr323cHC+ltGcQRXPbndOzm9D0WseLCH2MuC1Z9PE=",
+        "lastModified": 1790761054,
+        "narHash": "sha256-mRowvbwOejm608K7kvfj5oqLX6eJrZzEK3uIWsNE7F8=",
         "owner": "r3dg0d",
         "repo": "dnscheck",
-        "rev": "ea7a7d70f17f481b32a81baf4cda24b7c8ff6e48",
+        "rev": "7728cf68b0d8257b76db176892ec527bbb78c4cd",
         "type": "github"
       },
       "original": {
@@ -208,11 +208,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1790758153,
-        "narHash": "sha256-q/fmJ3KxKc344WGO1SKaoRs5M2XDpHYlhdJzZf6UtsI=",
+        "lastModified": 1790760988,
+        "narHash": "sha256-bJGE/E4AXa7ZPn7zdcbms676yVbj1QMKyvlmC7NPg3Q=",
         "owner": "r3dg0d",
         "repo": "macrandom",
-        "rev": "ebf5e4f75416e201c59ccbc311388b076195f9e1",
+        "rev": "54434b33362c15bbd3232b07b973050e9950dbfe",
         "type": "github"
       },
       "original": {
