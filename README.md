@@ -16,8 +16,8 @@ own — you do not need this repo.
 | [macrandom](https://github.com/r3dg0d/macrandom) | MAC-address randomizer (NetworkManager-aware) | Rust | No | `cargo install --git https://github.com/r3dg0d/macrandom` | v0.1.0 | [link](https://github.com/r3dg0d/macrandom) |
 | [mullvadctl](https://github.com/r3dg0d/mullvadctl) | Companion helpers for official Mullvad CLI | Rust | No | `cargo install --git https://github.com/r3dg0d/mullvadctl` | v0.1.0 | [link](https://github.com/r3dg0d/mullvadctl) |
 | [fakeperson](https://github.com/r3dg0d/fakeperson) | Photorealistic fictional people + synthetic identities | Python | Optional (CUDA via `text2img`) | `pip install git+https://github.com/r3dg0d/fakeperson` | v0.1.0 | [link](https://github.com/r3dg0d/fakeperson) |
-| [deepfake](https://github.com/r3dg0d/deepfake) | Research/VFX face-swap CLI (AlphaFace wrapper) | Python | Recommended | `pip install git+https://github.com/r3dg0d/deepfake` | v0.1.0 | [link](https://github.com/r3dg0d/deepfake) |
-| [aivoice](https://github.com/r3dg0d/aivoice) | Real-time voice conversion (MeanVC2 wrapper) | Python | Recommended | `pip install git+https://github.com/r3dg0d/aivoice` | v0.1.0 | [link](https://github.com/r3dg0d/aivoice) |
+| [deepfake](https://github.com/r3dg0d/deepfake) | Research/VFX face-swap CLI (AlphaFace wrapper) | Python | Recommended | `pip install git+https://github.com/r3dg0d/deepfake` | v0.2.1 | [link](https://github.com/r3dg0d/deepfake) |
+| [aivoice](https://github.com/r3dg0d/aivoice) | Real-time voice conversion (MeanVC2 wrapper) | Python | Recommended | `pip install git+https://github.com/r3dg0d/aivoice` | v0.3.0 | [link](https://github.com/r3dg0d/aivoice) |
 | [metaclean](https://github.com/r3dg0d/metaclean) | Metadata inspect / scrub | Rust | No | `cargo install --git https://github.com/r3dg0d/metaclean` | v0.1.0 | [link](https://github.com/r3dg0d/metaclean) |
 | [dnscheck](https://github.com/r3dg0d/dnscheck) | DNS privacy analyzer | Rust | No | `cargo install --git https://github.com/r3dg0d/dnscheck` | v0.1.0 | [link](https://github.com/r3dg0d/dnscheck) |
 | [netidentity](https://github.com/r3dg0d/netidentity) | Network identity snapshot / diff | Rust | No | `cargo install --git https://github.com/r3dg0d/netidentity` | v0.1.0 | [link](https://github.com/r3dg0d/netidentity) |
@@ -27,20 +27,45 @@ own — you do not need this repo.
 
 ## NixOS
 
-Each tool ships its own `flake.nix`. From this umbrella you can also:
+The eight Rust tools are available on `x86_64-linux` and `aarch64-linux`.
+This umbrella commits `flake.lock` to pin its tool sources and Nix dependencies;
+builds use those reviewed revisions until the lockfile is explicitly updated.
+Each tool remains independently installable.
 
 ```bash
 nix flake show github:r3dg0d/privsec-tools
-# package outputs mirror the tool names when flakes resolve
+nix build github:r3dg0d/privsec-tools#dnscheck
+nix run github:r3dg0d/privsec-tools#dnscheck -- --help
+nix run github:r3dg0d/privsec-tools#opsec-check -- --help
+nix profile install github:r3dg0d/privsec-tools#macrandom
 ```
 
-See `flake.nix` for the package set skeleton. Prefer installing individual
-tool flakes for reproducibility:
+The default package contains documentation. Select a named tool to build or run
+it. `opsec-check` is the existing host-audit CLI; this repository adds no separate
+audit implementation. Python AI tools in the catalog are installed from their
+own repositories, not from this Nix package set.
+
+## Package checks
 
 ```bash
-nix profile install github:r3dg0d/macrandom
-nix run github:r3dg0d/dnscheck -- status
+nix flake check --no-update-lock-file -L
 ```
+
+This builds all eight Rust packages, runs their package tests and executes each
+installed CLI with `--help`. CI runs these checks on native x86-64 and ARM64 Linux
+runners. Help smoke checks do not audit or modify host state; they do not establish
+that privileged operations, live network tools or browser audits work on every
+machine.
+
+Maintainers update individual tool inputs explicitly, for example:
+
+```bash
+nix flake update dnscheck
+nix flake check --no-update-lock-file -L
+```
+
+Review the lockfile diff and resulting package tests before committing the
+update. Tool changes are made in the individual repositories first.
 
 ## AI / model note
 
@@ -57,7 +82,8 @@ Synthetic-media tools are framed for research, VFX, avatars, filmmaking, and
 
 ## Releases
 
-Each repository tags `v0.1.0` with Linux binaries (Rust) or wheels/sdists (Python).
+Release versions vary by repository. See each tool’s GitHub Releases for its
+current binaries or Python wheels/sdists; catalog versions are reviewed snapshots.
 
 ## License
 

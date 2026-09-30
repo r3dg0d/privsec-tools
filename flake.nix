@@ -17,28 +17,35 @@
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system);
+      toolNames = [
+        "macrandom" "mullvadctl" "dnscheck" "netidentity"
+        "fileshred" "metaclean" "browserprivacy" "opsec-check"
+      ];
+      toolPackages = system: nixpkgs.lib.genAttrs toolNames
+        (name: inputs.${name}.packages.${system}.default);
     in {
       packages = forAllSystems (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          fromInput = name: inputs.${name}.packages.${system}.default or null;
-        in {
-          # Rust tools that expose flake packages
-          macrandom = fromInput "macrandom";
-          mullvadctl = fromInput "mullvadctl";
-          dnscheck = fromInput "dnscheck";
-          netidentity = fromInput "netidentity";
-          fileshred = fromInput "fileshred";
-          metaclean = fromInput "metaclean";
-          browserprivacy = fromInput "browserprivacy";
-          opsec-check = fromInput "opsec-check";
-          # Python AI tools: install from their own flakes / pip; listed for discoverability
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in toolPackages system // {
+          # The default remains documentation; tools are selected explicitly.
           default = pkgs.writeTextDir "share/doc/privsec-tools/README.md" (builtins.readFile ./README.md);
         });
 
-      # Convenience: documentation-only default for `nix flake show`
-      checks = forAllSystems (system: {
-        readme = self.packages.${system}.default;
-      });
+      apps = forAllSystems (system: nixpkgs.lib.genAttrs toolNames (name: {
+        type = "app";
+        program = "${self.packages.${system}.${name}}/bin/${name}";
+      }));
+
+      checks = forAllSystems (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          tools = toolPackages system;
+        in tools // {
+          readme = self.packages.${system}.default;
+          cli-smoke = pkgs.runCommand "privsec-tools-cli-smoke" { } ''
+            ${nixpkgs.lib.concatMapStringsSep "\n" (name: "${tools.${name}}/bin/${name} --help > /dev/null") toolNames}
+            touch "$out"
+          '';
+        });
     };
 }
